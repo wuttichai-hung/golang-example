@@ -1,0 +1,35 @@
+package main
+
+import (
+	"fmt"
+	kafka "github.com/segmentio/kafka-go"
+)
+
+func main() {
+	kafkaURL := "localhost:9092"
+	topic := "test"
+
+	reader := getKafkaReader(kafkaURL, topic)
+	reader.SetOffset(-1) //lastest
+
+	fmt.Println("start consuming ... !!")
+	for {
+		m, err := reader.ReadMessage(context.Background())
+		if err != nil {
+			log.Fatalln(err)
+		}
+		s := string(m.Value)
+		kafkaData := &KafkaDataJson{}
+		_ = json.Unmarshal([]byte(s), &kafkaData)
+		fmt.Println(kafkaData)
+}
+
+func getKafkaReader(kafkaURL, topic string) *kafka.Reader {
+	brokers := strings.Split(kafkaURL, ",")
+	return kafka.NewReader(kafka.ReaderConfig{
+		Brokers:  brokers,
+		Topic:    topic,
+		MinBytes: 10e3, // 10KB
+		MaxBytes: 10e6, // 10MB
+	})
+}
