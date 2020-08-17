@@ -13,11 +13,15 @@ func main() {
 		panic(err)
 	}
 	defer session.Close()
-	cConfig := session.DB("iSolarWhiz").C("config_criteriaAlarm")
+	cQuery := session.DB("db").C("col")
 	dataDB := make(bson.M)
-	err = cConfig.Find(bson.M{}).Select(bson.M{"_id": 0}).One(&dataDB)
+	err = cQuery.Find(bson.M{}).Select(bson.M{"_id": 0}).One(&dataDB)
 	if err != nil {
 		fmt.Print("Mongo Query Error!!")
 	}
 	fmt.Println(dataDB)
+	
+	cInsert := session.DB("db").C("col")
+	InsertData := `{"a":50, "b":"ABC"}`
+	_ = cInsert.Insert(InsertData)
 }
