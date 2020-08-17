@@ -10,6 +10,9 @@ import (
 	pb "google.golang.org/grpc/examples/helloworld/helloworld"
 	"gopkg.in/mgo.v2/bson"
 )
+var (
+	address      = "localhost:50051" 
+)
 
 func main() {
 	gRPC_ping := bson.M{"a": 5, "b": 10}
